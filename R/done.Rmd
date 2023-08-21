@@ -1,0 +1,47 @@
+---
+title: "activities"
+author: "Sujan Bhattarai"
+date: "2023-08-21"
+output: html_document
+---
+
+```{r}
+library(stringr)
+library( tidyr)
+library(tidyverse)
+library(lubridate)
+
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+alarm_report <- data.frame(
+  stringsAsFactors = FALSE,
+              date = c("2020-03-14", "2020-03-15", "2020-04-10", "2020-04-18"),
+          building = c("Engineering-North",
+                       "Bren Hall","Engineering-South","Engr-North"),
+     alarm_message = c("10:02am – HVAC system down, facilities management alerted",
+                       "8:24am – Elevator North out of service",
+                       "12:41am – Fire alarm, UCSB fire responded and cleared",
+                       "9:58pm – Campus point emergency siren, UCPD responded")
+) 
+
+alarm_report$building <- str_replace(alarm_report$building, "Engr", "Engineering") 
+
+```
+
+```{r}
+separate(alarm_report, col=building,
+          into=c("building", "wing"), sep="-")
+filtered_data <- subset(data, grepl("alarm", Building, ignore.case = TRUE))
+
+filtered_data <- subset(alarm_report, grepl("responded", alarm_message, ignore.case = TRUE))
+```
+
+```{r}
+alarm_report %>% 
+  mutate(date=as.Date(date))
+```
